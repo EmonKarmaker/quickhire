@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Epilogue:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --primary: #4640DE;
+  --primary-light: #E9E8FF;
+  --secondary: #26A4FF;
+  --dark: #25324B;
+  --dark-light: #515B6F;
+  --gray: #7C8493;
+  --gray-light: #A8ADB7;
+  --border: #D6DDEB;
+  --bg: #F8F8FD;
+  --white: #FFFFFF;
+  --accent-yellow: #FFB836;
+  --accent-green: #56CDAD;
+  --accent-red: #FF6550;
+  --accent-orange: #FF9228;
+  --tag-marketing: #FFB836;
+  --tag-design: #56CDAD;
+  --tag-business: #4640DE;
+  --tag-technology: #4640DE;
+  --tag-fulltime: #56CDAD;
+  --footer-bg: #202430;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Epilogue', sans-serif;
+  color: var(--dark);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Clash Display', sans-serif;
+}
+
+.font-clash {
+  font-family: 'Clash Display', sans-serif;
+}
+
+.font-epilogue {
+  font-family: 'Epilogue', sans-serif;
+}
+
+/* Tag color variants */
+.tag-marketing {
+  color: #FFB836;
+  border-color: #FFB836;
+  background: rgba(255, 184, 54, 0.1);
+}
+
+.tag-design {
+  color: #56CDAD;
+  border-color: #56CDAD;
+  background: rgba(86, 205, 173, 0.1);
+}
+
+.tag-business {
+  color: #4640DE;
+  border-color: #4640DE;
+  background: rgba(70, 64, 222, 0.1);
+}
+
+.tag-technology {
+  color: #26A4FF;
+  border-color: #26A4FF;
+  background: rgba(38, 164, 255, 0.1);
+}
+
+.tag-engineering {
+  color: #FF6550;
+  border-color: #FF6550;
+  background: rgba(255, 101, 80, 0.1);
+}
+
+.tag-finance {
+  color: #56CDAD;
+  border-color: #56CDAD;
+  background: rgba(86, 205, 173, 0.1);
+}
+
+.tag-fulltime {
+  color: #4640DE;
+  border-color: #4640DE;
+  background: rgba(70, 64, 222, 0.1);
+}
+
+.tag-full-time {
+  color: #56CDAD;
+  border-color: #56CDAD;
+  background: rgba(86, 205, 173, 0.1);
+}
+
+.tag-management {
+  color: #FF6550;
+  border-color: #FF6550;
+  background: rgba(255, 101, 80, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--gray-light);
+  border-radius: 3px;
+}
+
+/* Loading spinner */
+.spinner {
+  border: 3px solid var(--border);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }
