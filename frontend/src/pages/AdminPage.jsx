@@ -4,17 +4,25 @@ import { getJobs, deleteJob, createJob, getApplications } from '../services/api'
 import {
   HiPlus, HiTrash, HiEye, HiX, HiBriefcase, HiLocationMarker,
   HiUsers, HiDocumentText, HiCheckCircle, HiExclamationCircle,
-  HiChevronDown, HiChevronUp, HiExternalLink
+  HiChevronDown, HiChevronUp, HiExternalLink, HiLockClosed
 } from 'react-icons/hi';
 
 const CATEGORIES = ['Design','Sales','Marketing','Finance','Technology','Engineering','Business','Human Resource'];
 const JOB_TYPES = ['Full Time','Part Time','Remote','Internship'];
 
+// Simple admin credentials
+const ADMIN_EMAIL = 'admin@quickhire.com';
+const ADMIN_PASSWORD = 'admin123';
+
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState('');
+
   const [activeTab, setActiveTab] = useState('jobs');
   const [jobs, setJobs] = useState([]);
   const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [toast, setToast] = useState(null);
@@ -27,6 +35,101 @@ export default function AdminPage() {
   });
   const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+
+  // Check if already logged in
+  useEffect(() => {
+    const saved = sessionStorage.getItem('quickhire_admin');
+    if (saved === 'true') setIsAuthenticated(true);
+  }, []);
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setLoginError('');
+    if (loginForm.email === ADMIN_EMAIL && loginForm.password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      sessionStorage.setItem('quickhire_admin', 'true');
+    } else {
+      setLoginError('Invalid email or password. Try admin@quickhire.com / admin123');
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('quickhire_admin');
+  };
+
+  // Login Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#F8F8FD] flex items-center justify-center px-4">
+        <div className="w-full max-w-[420px] bg-white border border-[#D6DDEB] p-8 shadow-lg animate-fade-in-up">
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-[#4640DE] rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-lg">Q</span>
+              </div>
+              <span className="font-clash font-bold text-2xl text-[#25324B]">QuickHire</span>
+            </div>
+          </div>
+
+          <h1 className="font-clash text-2xl font-semibold text-[#25324B] text-center mb-2">
+            Admin Login
+          </h1>
+          <p className="text-[#7C8493] text-sm text-center mb-8">
+            Sign in to manage job listings and applications
+          </p>
+
+          {loginError && (
+            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+              <HiExclamationCircle size={18} className="text-red-500 shrink-0 mt-0.5" />
+              <p className="text-red-700 text-sm">{loginError}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-5">
+            <div>
+              <label className="block text-sm font-semibold text-[#25324B] mb-2">Email Address</label>
+              <input
+                type="email"
+                placeholder="admin@quickhire.com"
+                value={loginForm.email}
+                onChange={(e) => setLoginForm(prev => ({ ...prev, email: e.target.value }))}
+                className="w-full px-4 py-3 border border-[#D6DDEB] text-base text-[#25324B] placeholder:text-[#A8ADB7] outline-none font-epilogue focus:border-[#4640DE] transition-colors"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-[#25324B] mb-2">Password</label>
+              <input
+                type="password"
+                placeholder="Enter password"
+                value={loginForm.password}
+                onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
+                className="w-full px-4 py-3 border border-[#D6DDEB] text-base text-[#25324B] placeholder:text-[#A8ADB7] outline-none font-epilogue focus:border-[#4640DE] transition-colors"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-3 bg-[#4640DE] text-white font-bold text-base hover:bg-[#3530c9] transition-colors flex items-center justify-center gap-2"
+            >
+              <HiLockClosed size={18} />
+              Sign In
+            </button>
+          </form>
+
+          <div className="mt-6 p-3 bg-[#F8F8FD] border border-[#D6DDEB] rounded-lg">
+            <p className="text-[#7C8493] text-xs text-center">
+              <span className="font-semibold text-[#25324B]">Demo credentials:</span><br />
+              Email: admin@quickhire.com<br />
+              Password: admin123
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -48,13 +151,14 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     const load = async () => {
       setLoading(true);
       await Promise.all([fetchJobs(), fetchApplications()]);
       setLoading(false);
     };
     load();
-  }, []);
+  }, [isAuthenticated]);
 
   // Re-fetch applications when switching to that tab
   useEffect(() => {
@@ -146,13 +250,21 @@ export default function AdminPage() {
               </h1>
               <p className="text-[#515B6F] text-base mt-1">Manage job listings and view applications</p>
             </div>
-            <button
-              onClick={() => setShowCreateForm(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-[#4640DE] text-white font-bold text-base hover:bg-[#3530c9] transition-colors"
-            >
-              <HiPlus size={20} />
-              Post New Job
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowCreateForm(true)}
+                className="flex items-center gap-2 px-6 py-3 bg-[#4640DE] text-white font-bold text-base hover:bg-[#3530c9] transition-colors"
+              >
+                <HiPlus size={20} />
+                Post New Job
+              </button>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-3 border border-[#D6DDEB] text-[#515B6F] font-semibold text-sm hover:bg-gray-50 transition-colors"
+              >
+                Logout
+              </button>
+            </div>
           </div>
 
           {/* Stats */}
